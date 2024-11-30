@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Target, CheckSquare, MessageCircle } from 'lucide-react';
-import { useOKRStore } from '../store/okrStore';
+import { Objective } from '../types/okr';
 import { ObjectiveCard } from '../components/ObjectiveCard';
 import { Modal } from '../components/Modal';
 import { CreateObjectiveForm } from '../components/CreateObjectiveForm';
@@ -9,10 +9,73 @@ import { CreateTaskForm } from '../components/CreateTaskForm';
 import { AIChat } from '../components/AIChat';
 
 export function DashboardPage() {
-  const objectives = useOKRStore((state) => state.objectives);
+  // const objectives = useOKRStore((state) => state.objectives);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'objectives' | 'tasks' | 'ai'>('objectives');
+
+  const objectives: Objective[] = [
+    {
+      id: '1',
+      title: 'Increase Market Share',
+      description: 'Expand market reach and grow customer base',
+      startDate: '2024-04-01',
+      dueDate: '2024-06-30',
+      progress: 45,
+      keyResults: [
+        {
+          id: 'kr1-1',
+          title: 'Acquire new enterprise customers',
+          target: 50,
+          current: 20,
+          progress: 40,
+          unit: 'customers',
+          startDate: '2024-04-01',
+          dueDate: '2024-06-30'
+        },
+        {
+          id: 'kr1-2',
+          title: 'Increase revenue from existing customers',
+          target: 1000000,
+          current: 500000,
+          progress: 50,
+          unit: 'dollars',
+          startDate: '2024-04-01',
+          dueDate: '2024-06-30'
+        }
+      ]
+    },
+    {
+      id: '2',
+      title: 'Improve Customer Satisfaction',
+      description: 'Enhance overall customer experience and reduce churn rate',
+      startDate: '2024-01-01',
+      dueDate: '2024-12-31',
+      progress: 75,
+      keyResults: [
+        {
+          id: 'kr2-1',
+          title: 'Increase NPS score',
+          target: 85,
+          current: 65,
+          progress: 76,
+          unit: 'points',
+          startDate: '2024-01-01',
+          dueDate: '2024-12-31'
+        },
+        {
+          id: 'kr2-2',
+          title: 'Reduce customer support response time',
+          target: 2,
+          current: 1.4,
+          progress: 70,
+          unit: 'hours',
+          startDate: '2024-01-01',
+          dueDate: '2024-12-31'
+        }
+      ]
+    }
+  ]
 
   const renderContent = () => {
     switch (activeTab) {

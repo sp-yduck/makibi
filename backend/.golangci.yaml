@@ -1,0 +1,23 @@
+linters:
+  enable:
+    - bodyclose
+    - dupl
+    - durationcheck
+    - errorlint
+    - forbidigo
+    - gci
+    - ginkgolinter
+    - gofmt
+    - goheader
+    - goimports
+    - gomoddirectives
+    - gosec
+    - importas
+    - unparam
+    - whitespace
+
+linters-settings:
+  forbidigo:
+    forbid:
+      - p: ^c\.Bind.*$
+        msg: use handler.BindJson() instead to makes sure to use validation
