@@ -35,6 +35,16 @@ func registerRoutes(r *gin.Engine) {
 			user.PUT("", handler.UpdateUser)
 			// user.DELETE("", deleteUser)
 		}
+
+		// objectives
+		objectives := user.Group("/objectives")
+		{
+			objectives.GET("", handler.ListObjectives)
+			objectives.POST("", handler.CreateObjective)
+			objectives.GET("/:objective_id", handler.GetObjective)
+			// objectives.PUT("/:objective_id", handler.UpdateObjective)
+			objectives.DELETE("/:objective_id", handler.DeleteObjective)
+		}
 	}
 
 	if isDebugMode() {

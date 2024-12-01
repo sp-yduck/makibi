@@ -43,5 +43,7 @@ func InitDB(dbcfg DBConfig) error {
 	log.S().Info("Migrating db")
 	return db.Debug().AutoMigrate(
 		&User{},
+		&Objective{},
+		&KeyResult{},
 	)
 }

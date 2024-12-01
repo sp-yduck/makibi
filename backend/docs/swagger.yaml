@@ -8,6 +8,48 @@ definitions:
         description: Valid is true if Time is not NULL
         type: boolean
     type: object
+  model.KeyResult:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      due_date:
+        type: string
+      id:
+        type: integer
+      objective_id:
+        type: integer
+      start_date:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.Objective:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      due_date:
+        type: string
+      id:
+        type: integer
+      key_results:
+        items:
+          $ref: '#/definitions/model.KeyResult'
+        type: array
+      start_date:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
   model.User:
     properties:
       createdAt:
@@ -115,4 +157,136 @@ paths:
       summary: get specific user
       tags:
       - users
+  /users/{user_id}/objectives:
+    get:
+      consumes:
+      - application/json
+      description: get all objectives of a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Objective'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: get all objectives of a user
+      tags:
+      - objectives
+    post:
+      consumes:
+      - application/json
+      description: create new objective
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Objective
+        in: body
+        name: objective
+        required: true
+        schema:
+          $ref: '#/definitions/model.Objective'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Objective'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: create new objective
+      tags:
+      - objectives
+  /users/{user_id}/objectives/{objective_id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete a objective of a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Objective ID
+        in: path
+        name: objective_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Objective'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: delete a objective of a user
+      tags:
+      - objectives
+    get:
+      consumes:
+      - application/json
+      description: get a objectives of a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Objective ID
+        in: path
+        name: objective_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Objective'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: get a objectives of a user
+      tags:
+      - objectives
 swagger: "2.0"

@@ -58,7 +58,10 @@ $(GOLANGCI_LINT): $(LOCALBIN)
 ##@ Development
 
 .PHONY: fmt
-fmt: ## Run go fmt against code.
+fmt: go-fmt swag-fmt ## Run go fmt and swag fmt against code.
+
+.PHONY: go-fmt
+go-fmt: ## Run go fmt against code.
 	go fmt ./...
 
 .PHONY: vet

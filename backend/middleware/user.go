@@ -19,7 +19,7 @@ func UserMiddleware(c *gin.Context) {
 		return
 	}
 	if userID != authorizedUserID {
-		// use can see only owned resource
+		// user can see only owned resource
 		log.S().Debugf("user %s can not see %s's resource", authorizedUserID, userID)
 		c.String(http.StatusNotFound, "404 page not found")
 		c.Abort()
