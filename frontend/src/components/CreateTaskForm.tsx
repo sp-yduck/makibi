@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { useTaskStore } from '../store/taskStore';
-import { useOKRStore } from '../store/okrStore';
-import type { Task } from '../types/task';
+import React, { useEffect, useState } from "react";
+import { useTaskStore } from "../store/taskStore";
+import type { Task } from "../types/task";
+import { Objective } from "../types/okr";
+import { api } from "../lib/client";
 
 interface CreateTaskFormProps {
   onClose: () => void;
@@ -9,13 +10,13 @@ interface CreateTaskFormProps {
 }
 
 export function CreateTaskForm({ onClose, objectiveId }: CreateTaskFormProps) {
+  const [objective, setObjective] = useState<Partial<Objective>>([]);
   const addTask = useTaskStore((state) => state.addTask);
-  const objectives = useOKRStore((state) => state.objectives);
   const [task, setTask] = useState<Partial<Task>>({
-    title: '',
-    description: '',
-    status: 'todo',
-    dueDate: '',
+    title: "",
+    description: "",
+    status: "todo",
+    dueDate: "",
     objectiveId,
   });
 
@@ -26,8 +27,8 @@ export function CreateTaskForm({ onClose, objectiveId }: CreateTaskFormProps) {
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: task.title,
-      description: task.description || '',
-      status: task.status as Task['status'],
+      description: task.description || "",
+      status: task.status as Task["status"],
       dueDate: task.dueDate,
       objectiveId: task.objectiveId,
       keyResultId: task.keyResultId,
@@ -38,7 +39,13 @@ export function CreateTaskForm({ onClose, objectiveId }: CreateTaskFormProps) {
     onClose();
   };
 
-  const selectedObjective = objectives.find((obj) => obj.id === task.objectiveId);
+  useEffect(() => {
+    setObjective(api.objectives.get("1"));
+  }, []);
+
+  // const selectedObjective = objectives.find(
+  //   (obj) => obj.id === task.objectiveId
+  // );
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -47,28 +54,38 @@ export function CreateTaskForm({ onClose, objectiveId }: CreateTaskFormProps) {
         <input
           type="text"
           value={task.title}
-          onChange={(e) => setTask((prev) => ({ ...prev, title: e.target.value }))}
+          onChange={(e) =>
+            setTask((prev) => ({ ...prev, title: e.target.value }))
+          }
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Description</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Description
+        </label>
         <textarea
           value={task.description}
-          onChange={(e) => setTask((prev) => ({ ...prev, description: e.target.value }))}
+          onChange={(e) =>
+            setTask((prev) => ({ ...prev, description: e.target.value }))
+          }
           rows={3}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Due Date</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Due Date
+        </label>
         <input
           type="date"
           value={task.dueDate}
-          onChange={(e) => setTask((prev) => ({ ...prev, dueDate: e.target.value }))}
+          onChange={(e) =>
+            setTask((prev) => ({ ...prev, dueDate: e.target.value }))
+          }
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
           required
         />
@@ -76,10 +93,17 @@ export function CreateTaskForm({ onClose, objectiveId }: CreateTaskFormProps) {
 
       {!objectiveId && (
         <div>
-          <label className="block text-sm font-medium text-gray-700">Link to Objective</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Link to Objective
+          </label>
           <select
-            value={task.objectiveId || ''}
-            onChange={(e) => setTask((prev) => ({ ...prev, objectiveId: e.target.value || undefined }))}
+            value={task.objectiveId || ""}
+            onChange={(e) =>
+              setTask((prev) => ({
+                ...prev,
+                objectiveId: e.target.value || undefined,
+              }))
+            }
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
           >
             <option value="">None</option>
@@ -94,10 +118,17 @@ export function CreateTaskForm({ onClose, objectiveId }: CreateTaskFormProps) {
 
       {selectedObjective && (
         <div>
-          <label className="block text-sm font-medium text-gray-700">Link to Key Result</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Link to Key Result
+          </label>
           <select
-            value={task.keyResultId || ''}
-            onChange={(e) => setTask((prev) => ({ ...prev, keyResultId: e.target.value || undefined }))}
+            value={task.keyResultId || ""}
+            onChange={(e) =>
+              setTask((prev) => ({
+                ...prev,
+                keyResultId: e.target.value || undefined,
+              }))
+            }
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
           >
             <option value="">None</option>

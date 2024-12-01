@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/go-github/v66/github"
+	"github.com/sp-yduck/makibi/backend/log"
 	"github.com/sp-yduck/makibi/backend/middleware"
 	"github.com/sp-yduck/makibi/backend/model"
 	"github.com/sp-yduck/makibi/backend/oauth"
@@ -48,7 +49,7 @@ func AuthGithubLogin(c *gin.Context) {
 func AuthGithubCallback(c *gin.Context) {
 	oauthState, err := c.Cookie(OAuthState)
 	if c.Query("state") != oauthState || err != nil {
-		log.Errorf("invalid oauth state(%s): %v", oauthState, err)
+		log.S().Errorf("invalid oauth state(%s): %v", oauthState, err)
 		c.String(http.StatusUnauthorized, "invalid oauth state")
 		return
 	}
@@ -56,19 +57,19 @@ func AuthGithubCallback(c *gin.Context) {
 	// exchange code into a token
 	token, err := oauth.GithubOauthConfig().Exchange(c.Request.Context(), c.Query("code"))
 	if err != nil {
-		log.Errorf("failed to exchange github access token: %v", err)
+		log.S().Errorf("failed to exchange github access token: %v", err)
 		c.String(http.StatusBadRequest, "invalid oauth code")
 	}
-	log.Debugf("Got token for github: %v", *token)
+	log.S().Debugf("Got token for github: %v", *token)
 
 	// get gh user data
 	gUser, err := getUserDataFromGithub(c.Request.Context(), token)
 	if err != nil {
-		log.Errorf("failed to get github user data: %v", err)
+		log.S().Errorf("failed to get github user data: %v", err)
 		c.String(http.StatusBadRequest, "failed to get github user data")
 		return
 	}
-	log.Debugf("Got user info for %s", *gUser.Login)
+	log.S().Debugf("Got user info for %s", *gUser.Login)
 
 	// create entry for the user
 	userID := *gUser.Login
@@ -78,7 +79,7 @@ func AuthGithubCallback(c *gin.Context) {
 			EmailAddress: *gUser.Email,
 		},
 	); err != nil {
-		log.Errorf("failed to create ot create user: %v", err)
+		log.S().Errorf("failed to create ot create user: %v", err)
 		c.String(http.StatusInternalServerError, "internal server error")
 		return
 	}
@@ -86,7 +87,7 @@ func AuthGithubCallback(c *gin.Context) {
 	c.Set("userid", userID)
 	jwtToken, err := generateJWTToken(userID)
 	if err != nil {
-		log.Errorf("failed to generate jwt token: %v", err)
+		log.S().Errorf("failed to generate jwt token: %v", err)
 		c.String(http.StatusInternalServerError, "internal server error")
 		return
 	}
@@ -124,15 +125,15 @@ func generateOauthStateCookie(c *gin.Context) string {
 func getUserDataFromGithub(ctx context.Context, token *oauth2.Token) (*github.User, error) {
 	client := github.NewClient(oauth.GithubOauthConfig().Client(ctx, token))
 	user, res, err := client.Users.Get(ctx, "")
-	log.Debug(res)
+	log.S().Debug(res)
 	if err != nil {
-		log.Errorf("failed to get github user data: %v", err)
+		log.S().Errorf("failed to get github user data: %v", err)
 		return nil, err
 	}
 	emails, res, err := client.Users.ListEmails(ctx, &github.ListOptions{})
-	log.Debug(res)
+	log.S().Debug(res)
 	if err != nil {
-		log.Errorf("failed to get github user emails: %v", err)
+		log.S().Errorf("failed to get github user emails: %v", err)
 		return nil, err
 	}
 	for _, email := range emails {
@@ -140,7 +141,7 @@ func getUserDataFromGithub(ctx context.Context, token *oauth2.Token) (*github.Us
 			user.Email = email.Email
 		}
 	}
-	log.Debug(user)
+	log.S().Debug(user)
 	return user, nil
 }
 

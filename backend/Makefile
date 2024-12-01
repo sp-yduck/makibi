@@ -87,4 +87,4 @@ build: fmt vet swag-init ## Build
 LOCAL_CONFIG=config.yaml
 .PHONY: run
 run: build ## Run locally
-	./bin/api-server --config=${LOCAL_CONFIG} ${ARGS}
+	./bin/api-server -v --config=${LOCAL_CONFIG} ${ARGS}

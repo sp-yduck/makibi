@@ -1,36 +1,33 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthStore } from './store/authStore';
-import { Layout } from './components/Layout';
-import { LoginPage } from './pages/LoginPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { ObjectiveDetailsPage } from './pages/ObjectiveDetailsPage';
-import { ProfilePage } from './pages/ProfilePage';
-
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
-}
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Layout } from "./components/Layout";
+import { LoginPage } from "./pages/LoginPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { ObjectiveDetailsPage } from "./pages/ObjectiveDetailsPage";
+import ProfilePage from "./pages/ProfilePage";
+import { UserProvider } from "./context/User";
+import LoginCallback from "./pages/LoginCallback";
+import Hero from "./pages/Hero";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Layout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<DashboardPage />} />
-          <Route path="objective/:id" element={<ObjectiveDetailsPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <UserProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login/callback" element={<LoginCallback />} />
+          <Route path="/" element={<Layout />}>
+            <Route path="/" element={<Hero />} />
+            <Route path=":userId/dashboard" element={<DashboardPage />} />
+            <Route
+              path=":userId/objective/:objectiveId"
+              element={<ObjectiveDetailsPage />}
+            />
+            <Route path=":userId/profile" element={<ProfilePage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </UserProvider>
   );
 }
 

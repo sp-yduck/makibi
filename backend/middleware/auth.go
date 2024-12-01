@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/sp-yduck/makibi/backend/logger"
+	"github.com/sp-yduck/makibi/backend/log"
 	"github.com/sp-yduck/makibi/backend/oauth"
 )
 
@@ -18,7 +18,6 @@ const (
 )
 
 var (
-	log             = logger.S().With("pkg", "middleware")
 	ErrInvalidToken = fmt.Errorf("invalid beare token")
 )
 
@@ -26,18 +25,18 @@ var (
 func AuthMiddleware(c *gin.Context) {
 	tokenString, err := c.Cookie(SessionCookieName)
 	if err != nil {
-		log.Debugf("no authorization cookie : %v", err)
+		log.S().Debugf("no authorization cookie : %v", err)
 
 		// no cookie, check authorization header
 		authorizationHeader := c.GetHeader(AuthorizationHeader)
 		if authorizationHeader == "" {
-			log.Debug("no authorization header")
+			log.S().Debug("no authorization header")
 			c.String(http.StatusUnauthorized, "Unauthorized")
 			c.Abort()
 			return
 		}
 		if !strings.HasPrefix(authorizationHeader, BearerPrefix) {
-			log.Errorf("invalid authorization header: %s", authorizationHeader)
+			log.S().Errorf("invalid authorization header: %s", authorizationHeader)
 			c.String(http.StatusUnauthorized, ErrInvalidToken.Error())
 			c.Abort()
 			return
@@ -45,11 +44,11 @@ func AuthMiddleware(c *gin.Context) {
 		tokenString = authorizationHeader[len(BearerPrefix):]
 	}
 
-	log.Debugf("jwt token string = %s", tokenString)
+	log.S().Debugf("jwt token string = %s", tokenString)
 	userID, err := validateJWTToken(tokenString)
 	if err != nil {
-		log.Errorf("invalid token: %v", err)
-		log.Debugf("token: %s", tokenString)
+		log.S().Errorf("invalid token: %v", err)
+		log.S().Debugf("token: %s", tokenString)
 		c.String(http.StatusUnauthorized, ErrInvalidToken.Error())
 		c.Abort()
 		return

@@ -3,23 +3,21 @@ package config
 import (
 	"os"
 
-	"github.com/sp-yduck/makibi/backend/logger"
+	"github.com/sp-yduck/makibi/backend/log"
+	"github.com/sp-yduck/makibi/backend/model"
 	"github.com/sp-yduck/makibi/backend/oauth"
 	"github.com/sp-yduck/makibi/backend/validation"
 	"gopkg.in/yaml.v3"
 )
 
-var (
-	log = logger.S().With("pkg", "config")
-)
-
 type Config struct {
+	DB    model.DBConfig     `yaml:"db" validate:"required"`
 	Oauth oauth.OAuth2Config `yaml:"oauth" validate:"required"`
 }
 
 // read file and unmarshal it on Config type
 func ReadConfigFromFile(path string) (Config, error) {
-	log.Infof("Reading config yaml file: %s", path)
+	log.S().Infof("Reading config yaml file: %s", path)
 
 	var config Config
 	b, err := os.ReadFile(path)
@@ -30,7 +28,7 @@ func ReadConfigFromFile(path string) (Config, error) {
 		return config, err
 	}
 
-	log.Debugf("Config: %v", config)
+	log.S().Debugf("Config: %v", config)
 	return config, nil
 }
 

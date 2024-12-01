@@ -3,19 +3,17 @@ package oauth
 import (
 	"fmt"
 
-	"github.com/sp-yduck/makibi/backend/logger"
+	"github.com/sp-yduck/makibi/backend/log"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )
 
 var (
-	log = logger.S().With("pkg", "oauth")
-
 	// oauth
 	callbackURL       string
 	tokenSecret       string
 	githubOauthConfig *oauth2.Config
-	githubOauthScope  = []string{"read:user", "user:email", "repo:status"}
+	githubOauthScope  = []string{"user:email"}
 )
 
 type OAuth2Config struct {
@@ -28,7 +26,7 @@ type OAuth2Config struct {
 
 // initialize config
 func InitOauthConfig(cfg OAuth2Config) error {
-	log.Debug("initializing oauth config")
+	log.S().Debug("initializing oauth config")
 
 	if cfg.GithubClientID == "" || cfg.GithubRedirectURL == "" {
 		return fmt.Errorf("github client_id or redirect_url must not be empty")

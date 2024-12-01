@@ -3,7 +3,7 @@ package model
 import (
 	"fmt"
 
-	"github.com/sp-yduck/makibi/backend/logger"
+	"github.com/sp-yduck/makibi/backend/log"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -11,8 +11,6 @@ import (
 )
 
 var (
-	log = logger.S().With("pkg", "model")
-
 	db *gorm.DB
 )
 
@@ -26,9 +24,9 @@ type DBConfig struct {
 
 // initiate the connection with PostgreSQL DB and do auto-migrate
 func InitDB(dbcfg DBConfig) error {
-	log.Info("Initializing db")
+	log.S().Info("Initializing db")
 
-	log.Info("Opening db connection")
+	log.S().Info("Opening db connection")
 	var err error
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Tokyo",
@@ -42,7 +40,7 @@ func InitDB(dbcfg DBConfig) error {
 		return err
 	}
 
-	log.Info("Migrating db")
+	log.S().Info("Migrating db")
 	return db.Debug().AutoMigrate(
 		&User{},
 	)

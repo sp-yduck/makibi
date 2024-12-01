@@ -2,19 +2,17 @@ package validation
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/sp-yduck/makibi/backend/logger"
+	"github.com/sp-yduck/makibi/backend/log"
 )
 
 var (
-	log = logger.S().With("pkg", "validation")
-
 	// use a single instance of Validate, it caches struct info
 	validate *validator.Validate
 )
 
 // initialize validator
 func InitValidator() error {
-	log.Info("initializing validator")
+	log.S().Info("initializing validator")
 
 	// initialize
 	validate = validator.New()

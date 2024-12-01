@@ -11,23 +11,7 @@ import (
 // register handlers to each endpoint
 func registerRoutes(r *gin.Engine) {
 	// to do: cors config
-	// r.Use(cors.New(cors.Config{
-	// 	AllowOrigins: []string{"http://localhost:5173"},
-	// 	AllowHeaders: []string{
-	// 		"Authorization",
-	// 		"Content-Type",
-	// 		"Content-Length",
-	// 		"Authorization",
-	// 		"Access-Control-Allow-Origin",
-	// 		"Access-Control-Allow-Credentials",
-	// 		"Access-Control-Allow-Headers",
-	// 		"Access-Control-Allow-Methods",
-	// 		"Set-Cookie",
-	// 		"Cookie",
-	// 	},
-	// 	AllowCredentials: true,
-	// 	MaxAge:           1 * time.Hour,
-	// }))
+	r.Use(middleware.NewCorsMiddleware())
 
 	// auth
 	auth := r.Group("/auth/v1")
@@ -38,6 +22,7 @@ func registerRoutes(r *gin.Engine) {
 
 	// api
 	api := r.Group("/api/v1")
+	api.Use(middleware.AuthMiddleware)
 	{
 		// auth and user
 		api.GET("/me", handler.GetAuthenticatedUser)

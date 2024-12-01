@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sp-yduck/makibi/backend/log"
 	"github.com/sp-yduck/makibi/backend/model"
 )
 
@@ -26,7 +27,7 @@ func GetAuthenticatedUser(c *gin.Context) {
 	}
 	user, err := model.GetUser(userID.(string))
 	if err != nil {
-		log.Errorf("internal server error: %v", err)
+		log.S().Errorf("internal server error: %v", err)
 		c.String(http.StatusInternalServerError, "internal server error")
 		return
 	}
@@ -71,13 +72,13 @@ func UpdateUser(c *gin.Context) {
 	}
 	var user model.User
 	if err := BindJSON(c, &user); err != nil {
-		log.Errorf("failed to bind request: %v", err)
+		log.S().Errorf("failed to bind request: %v", err)
 		c.String(http.StatusBadRequest, "bad request")
 		return
 	}
 	// to do: check diff between currentUser and requested user
 	if err := model.UpdateUser(&user); err != nil {
-		log.Errorf("failed to update user: %v", err)
+		log.S().Errorf("failed to update user: %v", err)
 		c.String(http.StatusBadRequest, "bad request")
 		return
 	}

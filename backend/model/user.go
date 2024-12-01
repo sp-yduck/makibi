@@ -3,6 +3,7 @@ package model
 import (
 	"errors"
 
+	"github.com/sp-yduck/makibi/backend/log"
 	"gorm.io/gorm"
 )
 
@@ -31,12 +32,12 @@ func CreateOrUpdateUser(user *User) error {
 
 // physically delete the user
 func DeleteUser(userID string) error {
-	log.Debugf("DeleteUser: %s", userID)
+	log.S().Debugf("DeleteUser: %s", userID)
 	return db.Unscoped().Where("user_id = ?", userID).Delete(&User{}).Error
 }
 
 func ListUsers() ([]User, error) {
-	log.Debugf("GetUsers")
+	log.S().Debugf("GetUsers")
 	var users []User
 	if err := db.Find(&users).Error; err != nil {
 		return nil, err
@@ -45,7 +46,7 @@ func ListUsers() ([]User, error) {
 }
 
 func GetUser(userID string) (*User, error) {
-	log.Debugf("GetUser: %s", userID)
+	log.S().Debugf("GetUser: %s", userID)
 	var user User
 	if err := db.Where("user_id = ?", userID).First(&user).Error; err != nil {
 		return nil, err
@@ -54,7 +55,7 @@ func GetUser(userID string) (*User, error) {
 }
 
 func GetOrCreateUser(user User) (*User, error) {
-	log.Debugf("GetOrCreateUser: %v", user)
+	log.S().Debugf("GetOrCreateUser: %v", user)
 	var u User
 	if err := db.Where("user_id = ?", user.UserID).FirstOrCreate(&u, user).Error; err != nil {
 		return nil, err

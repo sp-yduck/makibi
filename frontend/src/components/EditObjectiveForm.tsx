@@ -4,11 +4,11 @@ import { CreateKeyResult } from "./CreateKeyResult";
 import type { Objective, KeyResult } from "../types/okr";
 import { calculateProgress } from "../lib/utils";
 
-interface CreateObjectiveFormProps {
+interface EditObjectiveFormProps {
   onClose: () => void;
 }
 
-export function CreateObjectiveForm({ onClose }: CreateObjectiveFormProps) {
+export function EditObjectiveForm({ onClose }: EditObjectiveFormProps) {
   const addObjective = () => {};
   const [objective, setObjective] = useState<Partial<Objective>>({
     title: "",
@@ -175,20 +175,31 @@ export function CreateObjectiveForm({ onClose }: CreateObjectiveFormProps) {
         </div>
       </div>
 
-      <div className="flex justify-end space-x-3">
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Create Objective
-        </button>
+      <div className="flex items-center justify-between">
+        <div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 border border-red-500 rounded-md text-sm font-medium text-red-500 hover:bg-red-50"
+          >
+            Delete Objective
+          </button>
+        </div>
+        <div className="flex justify-end space-x-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Update Objective
+          </button>
+        </div>
       </div>
     </form>
   );

@@ -1,27 +1,12 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
-import { Flame, Github, Mail } from 'lucide-react';
+import React from "react";
+import { Flame, Github, Mail } from "lucide-react";
 
 export function LoginPage() {
-  const { loginWithRedirect, loginWithPopup } = useAuth0();
-  const navigate = useNavigate();
-
-  const handleGoogleLogin = () => {
-    loginWithRedirect({
-      authorizationParams: {
-        connection: 'google-oauth2'
-      }
-    });
-  };
-
+  const handleGoogleLogin = () => {};
   const handleGithubLogin = () => {
-    loginWithPopup({
-      authorizationParams: {
-        connection: 'github'
-      }
-    });
+    window.location.href = `${import.meta.env.VITE_AUTH_URL}/github/login`;
   };
+  const handleEmailLogin = () => {};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -71,7 +56,7 @@ export function LoginPage() {
           </div>
 
           <button
-            onClick={() => loginWithRedirect()}
+            onClick={() => handleEmailLogin}
             className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
           >
             <Mail className="h-5 w-5 mr-2" />
